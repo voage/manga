@@ -21,7 +21,7 @@ export default function Login() {
 
       const userCredential = await signInWithEmailAndPassword(
         getAuth(firebaseApp),
-        email,
+        email.toLowerCase(),
         password
       );
       const user = userCredential.user;

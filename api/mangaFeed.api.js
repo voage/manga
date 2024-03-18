@@ -1,17 +1,21 @@
-import axios from 'axios';
-import { MANGADEX_API } from '../constants/api';
-
 export async function getMangaFeed(limit = 10) {
   try {
-    const response = await axios.get(MANGADEX_API + '/manga', {
-      params: {
-        limit: limit,
-        includes: ['cover_art'],
-        hasAvailableChapters: true,
-      },
-    });
+    let headersList = {
+      Accept: '*/*',
+      'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
+    };
 
-    return response.data.data;
+    let response = await fetch(
+      'https://api.mangadex.org/manga?includes[]=cover_art&hasAvailableChapters=true',
+      {
+        method: 'GET',
+        headers: headersList,
+      }
+    );
+
+    const json = await response.json();
+
+    return json.data;
   } catch (error) {
     throw new Error('Error fetching manga feed');
   }

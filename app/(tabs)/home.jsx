@@ -28,16 +28,19 @@ export default function Home() {
         mangaFeed.map((manga) => (
           <View key={manga.id} style={styles.mangaContainer}>
             <Text style={styles.title}>{manga.attributes.title.en}</Text>
+
             {manga.relationships
               .filter((mangaRelationship) => mangaRelationship.type === 'cover_art')
               .map((mangaCover) => (
-                <Image
-                  key={mangaCover.id}
-                  style={{ width: 100, height: 150 }}
-                  source={{
-                    uri: `https://uploads.mangadex.org/covers/${manga.id}/${mangaCover.attributes.fileName}`,
-                  }}
-                />
+                <Link key={manga.id} href={`/manga/${manga.id}`}>
+                  <Image
+                    key={mangaCover.id}
+                    style={{ width: 100, height: 150 }}
+                    source={{
+                      uri: `https://uploads.mangadex.org/covers/${manga.id}/${mangaCover.attributes.fileName}`,
+                    }}
+                  />
+                </Link>
               ))}
           </View>
         ))}
