@@ -19,6 +19,32 @@ export const getMangaChapters = async (mangaId) => {
   }
 };
 
+export const getMangaChapterImage = async (chapterId) => {
+  try {
+    let headersList = {
+      Accept: '*/*',
+      'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
+    };
+
+    let response = await fetch(`https://api.mangadex.org/at-home/server/${chapterId}`, {
+      method: 'GET',
+      headers: headersList,
+    });
+
+    const json = await response.json();
+    const baseUrl = json.baseUrl;
+
+    const chapterImages = json.chapter.data.map(
+      (img) => `${baseUrl}/data/${json.chapter.hash}/${img}`
+    );
+
+    return chapterImages;
+  } catch (error) {
+    console.log(error);
+    throw new Error('Error fetching manga chapter image');
+  }
+};
+
 const groupAndSortChaptersByVolume = (chapters) => {
   const groupedByVolume = {};
 
