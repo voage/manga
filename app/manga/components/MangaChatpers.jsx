@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
+import { Link } from 'expo-router';
 const MangaChapters = ({ chapters }) => {
   return (
     <View style={styles.container}>
@@ -11,12 +11,14 @@ const MangaChapters = ({ chapters }) => {
           <View style={styles.chapterGrid}>
             {chapters[volume].map((chapter) => (
               <View key={chapter.id} style={styles.chapterCard}>
-                <Text style={styles.chapterTitle}>
-                  {chapter.attributes.title || `Chapter ${chapter.attributes.chapter}`}
-                </Text>
-                <Text style={styles.chapterInfo}>
-                  lang: {chapter.attributes.translatedLanguage}
-                </Text>
+                <Link href={`/chapters/${chapter.id}`}>
+                  <Text style={styles.chapterTitle}>
+                    {chapter.attributes.title || `Chapter ${chapter.attributes.chapter}`}
+                  </Text>
+                  <Text style={styles.chapterInfo}>
+                    lang: {chapter.attributes.translatedLanguage}
+                  </Text>
+                </Link>
               </View>
             ))}
           </View>
