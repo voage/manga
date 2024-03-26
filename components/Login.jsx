@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import firebaseApp from '../../firebaseConfig';
-import { useNavigation } from 'expo-router';
-import AppButton from '../../components/AppButton';
-import InputField from '../../components/InputField';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import firebaseApp from '../firebaseConfig';
+import AppButton from './AppButton';
+import InputField from './InputField';
+import { useUser } from '../context/UserContext';
 
-export default function Signup() {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setUser } = useUser();
 
-  const navigation = useNavigation();
-
-  const handleSignUp = async () => {
+  const handleLogin = async () => {
     try {
       if (email.length === 0 || password.length === 0) {
         Alert.alert('Error', 'Email and password are required');
         return;
       }
 
-      const userCredential = await createUserWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
         getAuth(firebaseApp),
-        email,
+        email.toLowerCase(),
         password
       );
       const user = userCredential.user;
-      Alert.alert('Success', `User ${user.email} has been created`);
+      setUser(user);
+      Alert.alert('Success', `Welcome back ${user.email}`);
     } catch (error) {
       Alert.alert('Error', error.message);
     }
@@ -33,7 +33,7 @@ export default function Signup() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Sign Up to MangaStack</Text>
+      <Text style={styles.header}>Login to MangaStack</Text>
       <InputField placeholder="Email" value={email} onChangeText={setEmail} />
       <InputField
         placeholder="Password"
@@ -41,20 +41,12 @@ export default function Signup() {
         value={password}
         onChangeText={setPassword}
       />
-
-      <AppButton title="Sign Up" onPress={handleSignUp} />
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Already have an account?{' '}
-          <Text style={styles.linkText} onPress={() => navigation.navigate('login')}>
-            Log In
-          </Text>
-        </Text>
-      </View>
+      <AppButton title="Login" onPress={handleLogin} />
     </View>
   );
-}
+};
+
+export default Login;
 
 const styles = StyleSheet.create({
   container: {

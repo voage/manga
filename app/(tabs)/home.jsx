@@ -3,10 +3,12 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { getMangaFeed } from '../../api/mangaFeed.api';
 import { Link } from 'expo-router';
+import { useUser } from '../../context/UserContext';
 
 export default function Home() {
   const [mangaFeed, setMangaFeed] = useState([]);
   const [error, setError] = useState(null);
+  const { user } = useUser();
 
   useEffect(() => {
     async function fetchMangaFeed() {
@@ -22,7 +24,9 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Link href="/signup">Sign Up?</Link>
+      {!user && <Link href="/signup">Sign Up?</Link>}
+
+      {user && <Text>Welcome {user.email}</Text>}
 
       {mangaFeed &&
         mangaFeed.map((manga) => (

@@ -1,9 +1,32 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { useUser } from '../../../context/UserContext';
 
 const MangaHeader = ({ manga, stats }) => {
   const { attributes } = manga;
   const coverArt = manga.relationships.find((relationship) => relationship.type === 'cover_art');
   const tags = attributes.tags.map((tag) => tag.attributes.name.en);
+
+  const { user } = useUser();
+  const db = getFirestore();
+
+  const handleSaveForLater = async () => {
+    if (!user) {
+      Alert.alert('You need to be logged in to save manga for later');
+      return;
+    }
+
+    try {
+      const res = await addDoc(collection(db, 'users', user.uid, 'savedManga'), {
+        title: manga.attributes.title.en,
+        mangaId: manga.id,
+        coverArt: coverArt ? coverArt.attributes.fileName : '',
+      });
+      Alert.alert('Manga saved for later');
+    } catch (error) {
+      Alert.alert('Error saving manga for later', error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -56,6 +79,9 @@ const MangaHeader = ({ manga, stats }) => {
           </Text>
         </View>
       </View>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSaveForLater}>
+        <Text style={styles.saveButtonText}>Save for Later</Text>
+      </TouchableOpacity>
 
       <Text style={[styles.text, styles.description]}>{manga.attributes.description.en}</Text>
     </View>
@@ -126,6 +152,18 @@ const styles = StyleSheet.create({
   description: {
     padding: 10,
     fontSize: 12.5,
+  },
+  saveButton: {
+    marginHorizontal: 10,
+    backgroundColor: '#ff7a45',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
