@@ -14,6 +14,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="favorites"
+        options={{
+          title: 'Favorites',
+          headerShown: true,
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="heart" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="account"
         options={{
           title: 'Account',
