@@ -1,7 +1,8 @@
+import React from 'react';
+import { ScrollView, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { getMangaFeed } from '../../api/mangaFeed.api';
+import { StyleSheet } from 'react-native';
+import MangaScrollView from '../../components/HomePageManga';
 import { Link } from 'expo-router';
 import { useUser } from '../../context/UserContext';
 
@@ -23,42 +24,22 @@ export default function Home() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {!user && <Link href="/signup">Sign Up?</Link>}
+    <ScrollView style={styles.container}>
+      <Text> {user && `Welcome` + user.email}</Text>
 
-      {user && <Text>Welcome {user.email}</Text>}
+      <Link href="/signup">Sign Up?</Link>
 
-      {mangaFeed &&
-        mangaFeed.map((manga) => (
-          <View key={manga.id} style={styles.mangaContainer}>
-            <Text style={styles.title}>{manga.attributes.title.en}</Text>
-
-            {manga.relationships
-              .filter((mangaRelationship) => mangaRelationship.type === 'cover_art')
-              .map((mangaCover) => (
-                <Link key={manga.id} href={`/manga/${manga.id}`}>
-                  <Image
-                    key={mangaCover.id}
-                    style={{ width: 100, height: 150 }}
-                    source={{
-                      uri: `https://uploads.mangadex.org/covers/${manga.id}/${mangaCover.attributes.fileName}`,
-                    }}
-                  />
-                </Link>
-              ))}
-          </View>
-        ))}
-
-      {error && <Text>{error.message}</Text>}
+      <MangaScrollView title="For you" offset={0} />
+      <MangaScrollView title="Popular" offset={10} />
+      <MangaScrollView title="Top Rated" offset={20} />
 
       <StatusBar style="auto" />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 10,
     marginTop: 80,
   },
