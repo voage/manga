@@ -14,16 +14,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="login"
+        name="account"
         options={{
-          title: 'Login',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="sign-in" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="signup"
-        options={{
-          title: 'Signup',
+          title: 'Account',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="user-plus" color={color} />,
         }}
       />

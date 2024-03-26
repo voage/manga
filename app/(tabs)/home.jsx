@@ -4,11 +4,28 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import MangaScrollView from '../../components/HomePageManga';
 import { Link } from 'expo-router';
+import { useUser } from '../../context/UserContext';
 
 export default function Home() {
+  const [mangaFeed, setMangaFeed] = useState([]);
+  const [error, setError] = useState(null);
+  const { user } = useUser();
+
+  useEffect(() => {
+    async function fetchMangaFeed() {
+      try {
+        const feed = await getMangaFeed();
+        setMangaFeed(feed);
+      } catch (error) {
+        setError(error);
+      }
+    }
+    fetchMangaFeed();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
-      <Text>Welcome User</Text>
+      <Text> {user && `Welcome` + user.email}</Text>
 
       <Link href="/signup">Sign Up?</Link>
 

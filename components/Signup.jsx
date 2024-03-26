@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import firebaseApp from '../../firebaseConfig';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import firebaseApp from '../firebaseConfig';
 import { useNavigation } from 'expo-router';
-import AppButton from '../../components/AppButton';
-import InputField from '../../components/InputField';
+import AppButton from './AppButton';
+import InputField from './InputField';
 
-export default function Login() {
+const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const navigation = useNavigation();
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     try {
       if (email.length === 0 || password.length === 0) {
         Alert.alert('Error', 'Email and password are required');
         return;
       }
 
-      const userCredential = await signInWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         getAuth(firebaseApp),
-        email.toLowerCase(),
+        email,
         password
       );
       const user = userCredential.user;
-      Alert.alert('Success', `Welcome back ${user.email}`);
+      Alert.alert('Success', `User ${user.email} has been created`);
     } catch (error) {
       Alert.alert('Error', error.message);
     }
@@ -33,7 +33,7 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Login to MangaStack</Text>
+      <Text style={styles.header}>Sign Up to MangaStack</Text>
       <InputField placeholder="Email" value={email} onChangeText={setEmail} />
       <InputField
         placeholder="Password"
@@ -41,19 +41,13 @@ export default function Login() {
         value={password}
         onChangeText={setPassword}
       />
-      <AppButton title="Login" onPress={handleLogin} />
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Don't have an account?{' '}
-          <Text style={styles.linkText} onPress={() => navigation.navigate('signup')}>
-            Sign Up
-          </Text>
-        </Text>
-      </View>
+      <AppButton title="Sign Up" onPress={handleSignUp} />
     </View>
   );
-}
+};
+
+export default Signup;
 
 const styles = StyleSheet.create({
   container: {
