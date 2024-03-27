@@ -1,5 +1,6 @@
 import { ScrollView, Text, View, Image, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
+
 import React, { useState, useEffect } from 'react';
 import { getManga } from '../api/mangaFeed.api';
 

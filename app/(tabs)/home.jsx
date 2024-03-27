@@ -8,13 +8,18 @@ import { useUser } from '../../context/UserContext';
 
 export default function Home() {
   const { user } = useUser();
+  <Text style={styles.header}> {user && `Welcome ` + user.email}</Text>;
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}> {user && `Welcome ` + user.email}</Text>
       <MangaView title="For you" endpoint={'includes[]=cover_art'} />
-      <MangaView title="Newly Updated" endpoint={'includes[]=cover_art&order[createdAt]=asc'} />
+      <MangaView title="Newly Updated" endpoint={'includes[]=cover_art&order[updatedAt]=desc'} />
       <MangaView title="Top rated" endpoint={'includes[]=cover_art&order[rating]=desc'} />
+      <MangaView
+        title="Power Rankings"
+        endpoint={'includes[]=cover_art&order[followedCount]=desc'}
+      />
+
       <StatusBar style="auto" />
     </ScrollView>
   );
