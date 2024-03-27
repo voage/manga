@@ -17,16 +17,22 @@ export default function Account() {
           onPress={() => setIsLoginView((prevIsLoginView) => !prevIsLoginView)}
           style={{ textAlign: 'center', marginBottom: 30 }}
         >
-          Already have an account? {isLoginView ? 'Sign Up' : 'Login'}
+          {isLoginView ? "Don't have an account? " : 'Already have an account? '}
+          <Text
+            onPress={() => setIsLoginView((prevIsLoginView) => !prevIsLoginView)}
+            style={{ fontWeight: 'bold' }}
+          >
+            {isLoginView ? 'Sign Up' : 'Login'}
+          </Text>
         </Text>
       </>
     );
+  } else {
+    return (
+      <View>
+        <Text>Welcome {user.email}</Text>
+        <Button title="Logout" onPress={signOut} />
+      </View>
+    );
   }
-
-  return (
-    <View>
-      <Text>Welcome {user.email}</Text>
-      <Button title="Logout" onPress={signOut} />
-    </View>
-  );
 }

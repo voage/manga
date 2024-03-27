@@ -25,9 +25,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text> {user && `Welcome` + user.email}</Text>
-
-      <Link href="/signup">Sign Up?</Link>
+      <Text> {user && `Welcome ` + user.email}</Text>
 
       <MangaScrollView title="For you" offset={0} />
       <MangaScrollView title="Popular" offset={10} />

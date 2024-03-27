@@ -20,7 +20,9 @@ const MangaHeader = ({ manga, stats }) => {
       const res = await addDoc(collection(db, 'users', user.uid, 'savedManga'), {
         title: manga.attributes.title.en,
         mangaId: manga.id,
-        coverArt: coverArt ? coverArt.attributes.fileName : '',
+        coverArt: coverArt
+          ? `https://uploads.mangadex.org/covers/${manga.id}/${coverArt.attributes.fileName}`
+          : '',
       });
       Alert.alert('Manga saved for later');
     } catch (error) {
