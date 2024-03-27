@@ -1,31 +1,38 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
 import firebaseApp from '../firebaseConfig';
-import { useNavigation } from 'expo-router';
 import AppButton from './AppButton';
 import InputField from './InputField';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const navigation = useNavigation();
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
 
   const handleSignUp = async () => {
     try {
-      if (email.length === 0 || password.length === 0) {
-        Alert.alert('Error', 'Email and password are required');
+      if (
+        email.length === 0 ||
+        password.length === 0 ||
+        name.length === 0 ||
+        username.length === 0
+      ) {
+        Alert.alert('Error', 'All fields are required');
         return;
       }
 
-      const userCredential = await createUserWithEmailAndPassword(
-        getAuth(firebaseApp),
-        email,
-        password
-      );
+      const auth = getAuth(firebaseApp);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      Alert.alert('Success', `User ${user.email} has been created`);
+
+      await updateProfile(user, {
+        displayName: name,
+        username,
+      });
+
+      Alert.alert('Success', `Welcome ${name}! Your account has been created.`);
     } catch (error) {
       Alert.alert('Error', error.message);
     }
@@ -34,6 +41,8 @@ const Signup = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Sign Up to MangaStack</Text>
+      <InputField placeholder="Name" value={name} onChangeText={setName} />
+      <InputField placeholder="Username" value={username} onChangeText={setUsername} />
       <InputField placeholder="Email" value={email} onChangeText={setEmail} />
       <InputField
         placeholder="Password"

@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text> {user && `Welcome ` + user.email}</Text>
+      <Text style={styles.header}> {user && `Welcome ` + user.displayName}</Text>
 
       <MangaScrollView title="For you" offset={0} />
       <MangaScrollView title="Popular" offset={10} />
@@ -39,6 +39,12 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    marginTop: 80,
+    marginTop: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });

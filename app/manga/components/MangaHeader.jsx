@@ -1,14 +1,31 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, getDocs } from 'firebase/firestore';
 import { useUser } from '../../../context/UserContext';
+import { useState, useEffect } from 'react';
 
 const MangaHeader = ({ manga, stats }) => {
   const { attributes } = manga;
   const coverArt = manga.relationships.find((relationship) => relationship.type === 'cover_art');
   const tags = attributes.tags.map((tag) => tag.attributes.name.en);
+  const [isSaved, setIsSaved] = useState(false);
 
   const { user } = useUser();
   const db = getFirestore();
+
+  useEffect(() => {
+    if (user) {
+      const fetchSavedManga = async () => {
+        const q = query(collection(db, 'users', user.uid, 'savedManga'));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          if (doc.data().mangaId === manga.id) {
+            setIsSaved(true);
+          }
+        });
+      };
+      fetchSavedManga();
+    }
+  }, [user, manga.id, db]);
 
   const handleSaveForLater = async () => {
     if (!user) {
@@ -17,7 +34,7 @@ const MangaHeader = ({ manga, stats }) => {
     }
 
     try {
-      const res = await addDoc(collection(db, 'users', user.uid, 'savedManga'), {
+      await addDoc(collection(db, 'users', user.uid, 'savedManga'), {
         title: manga.attributes.title.en,
         mangaId: manga.id,
         coverArt: coverArt
@@ -25,6 +42,7 @@ const MangaHeader = ({ manga, stats }) => {
           : '',
       });
       Alert.alert('Manga saved for later');
+      setIsSaved(true);
     } catch (error) {
       Alert.alert('Error saving manga for later', error.message);
     }
@@ -81,9 +99,17 @@ const MangaHeader = ({ manga, stats }) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.saveButton} onPress={handleSaveForLater}>
-        <Text style={styles.saveButtonText}>Save for Later</Text>
-      </TouchableOpacity>
+      {!isSaved && (
+        <TouchableOpacity style={styles.saveButton} onPress={handleSaveForLater}>
+          <Text style={styles.saveButtonText}>Save for Later</Text>
+        </TouchableOpacity>
+      )}
+
+      {isSaved && (
+        <TouchableOpacity style={styles.savedButton}>
+          <Text style={styles.saveButtonText}>Saved</Text>
+        </TouchableOpacity>
+      )}
 
       <Text style={[styles.text, styles.description]}>{manga.attributes.description.en}</Text>
     </View>
@@ -158,6 +184,14 @@ const styles = StyleSheet.create({
   saveButton: {
     marginHorizontal: 10,
     backgroundColor: '#ff7a45',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  savedButton: {
+    marginHorizontal: 10,
+    backgroundColor: '#4caf50',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
