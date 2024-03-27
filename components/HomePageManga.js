@@ -1,53 +1,65 @@
-import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, View, Image, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { getMangaFeed } from '../api/mangaFeed.api';
+import React, { useState, useEffect } from 'react';
+import { getManga } from '../api/mangaFeed.api';
 
-const MangaScrollView = ({ title, offset }) => {
-  const [mangaFeed, setMangaFeed] = useState([]);
+const MangaView = ({ title, offset, endpoint }) => {
+  const [theManga, setTheManga] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchMangaFeed() {
+    async function fetchManga() {
       try {
-        const feed = await getMangaFeed(offset);
-        setMangaFeed(feed);
+        const mangaList = await getManga(offset, endpoint);
+        setTheManga(mangaList);
       } catch (error) {
         setError(error);
       }
     }
-    fetchMangaFeed();
-  }, [offset]);
+    fetchManga();
+  }, []);
+
+  const getTitleInAnyLanguage = (manga) => {
+    for (const language in manga.attributes.title) {
+      if (manga.attributes.title.hasOwnProperty(language)) {
+        return manga.attributes.title[language];
+      }
+    }
+    return 'Title Not Available';
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <ScrollView
         horizontal={true}
-        contentContainerStyle={styles.scrollView}
+        contentContainerStyle={styles.ScrollView}
         showsHorizontalScrollIndicator={false}
       >
-        {mangaFeed.map((manga) => (
+        {theManga.map((manga) => (
           <View key={manga.id} style={styles.mangaItem}>
             {manga.relationships
               .filter((mangaRelationship) => mangaRelationship.type === 'cover_art')
               .map((mangaCover) => (
                 <Link key={manga.id} href={`/manga/${manga.id}`} style={{}}>
-                  <Image
-                    style={styles.mangaCover}
-                    source={{
-                      uri: `https://uploads.mangadex.org/covers/${manga.id}/${mangaCover.attributes.fileName}`,
-                    }}
-                  />
+                  <View>
+                    <Image
+                      style={styles.mangaCover}
+                      key={mangaCover.id}
+                      source={{
+                        uri: `https://uploads.mangadex.org/covers/${manga.id}/${mangaCover.attributes.fileName}`,
+                      }}
+                    />
+                  </View>
                 </Link>
               ))}
             <Text style={styles.mangaTitle} ellipsizeMode="tail" numberOfLines={2}>
-              {manga.attributes.title.en}
+              {getTitleInAnyLanguage(manga)}
             </Text>
           </View>
         ))}
       </ScrollView>
-      {error && <Text style={styles.error}>{error.message}</Text>}
+      {error && <Text>{error.message}</Text>}
     </View>
   );
 };
@@ -91,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MangaScrollView;
+export default MangaView;
