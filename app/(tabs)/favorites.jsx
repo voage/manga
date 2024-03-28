@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, query, onSnapshot } from 'firebase/firestore';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { useUser } from '../../context/UserContext';
 import { Link } from 'expo-router';
 
@@ -40,30 +40,32 @@ const Favorites = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {!user && <Text style={styles.loginPrompt}>Please log in to view favorites</Text>}
-      {user && (
-        <>
-          <Text style={styles.title}>Favorites</Text>
-          <View>
-            {arrayThing(favoriteMangas, 3).map((row, rowIndex) => (
-              <View key={rowIndex} style={styles.row}>
-                {row.map((manga) => (
-                  <View key={manga.id} style={styles.item}>
-                    <Image source={{ uri: manga.coverArt }} style={styles.coverArt} />
-                    <Link key={manga.id} href={`/manga/${manga.mangaId}`} style={{}}>
-                      <Text style={styles.mangaTitle} ellipsizeMode="tail" numberOfLines={2}>
-                        {manga.title}
-                      </Text>
-                    </Link>
-                  </View>
-                ))}
-              </View>
-            ))}
-          </View>
-        </>
-      )}
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        {!user && <Text style={styles.loginPrompt}>Please log in to view favorites</Text>}
+        {user && (
+          <>
+            <Text style={styles.title}>Favorites</Text>
+            <View>
+              {arrayThing(favoriteMangas, 3).map((row, rowIndex) => (
+                <View key={rowIndex} style={styles.row}>
+                  {row.map((manga) => (
+                    <View key={manga.id} style={styles.item}>
+                      <Image source={{ uri: manga.coverArt }} style={styles.coverArt} />
+                      <Link key={manga.id} href={`/manga/${manga.mangaId}`} style={{}}>
+                        <Text style={styles.mangaTitle} ellipsizeMode="tail" numberOfLines={2}>
+                          {manga.title}
+                        </Text>
+                      </Link>
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -85,19 +87,21 @@ const styles = StyleSheet.create({
   },
   item: {
     width: '30%',
+    height: '100%',
     borderRadius: 8,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 2,
     elevation: 5,
+    marginBottom: 20,
+    padding: 10,
   },
   mangaTitle: {
     fontWeight: 'bold',
     fontSize: 14,
     color: '#333',
-    padding: 5,
     textAlign: 'center',
   },
   coverArt: {

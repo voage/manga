@@ -5,10 +5,13 @@ export const getMangaChapters = async (mangaId) => {
       'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
     };
 
-    let response = await fetch(`https://api.mangadex.org/manga/${mangaId}/feed`, {
-      method: 'GET',
-      headers: headersList,
-    });
+    let response = await fetch(
+      `https://api.mangadex.org/manga/${mangaId}/feed?translatedLanguage[]=en&includes[]=scanlation_group`,
+      {
+        method: 'GET',
+        headers: headersList,
+      }
+    );
 
     const json = await response.json();
 
