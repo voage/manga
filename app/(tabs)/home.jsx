@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}> {user && `Welcome ` + user.displayName}</Text>
+      <Text style={styles.header}> {user ? `Welcome ` + user.displayName : 'Welcome'}</Text>
 
       <MangaScrollView title="For you" offset={0} />
       <MangaScrollView title="Popular" offset={10} />
