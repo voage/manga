@@ -44,12 +44,14 @@ export default function Search() {
               .filter((relationship) => relationship.type === 'cover_art')
               .map((cover) => (
                 <Link key={item.id} href={`/manga/${item.id}`}>
-                  <Image
-                    style={styles.mangaCover}
-                    source={{
-                      uri: `https://uploads.mangadex.org/covers/${item.id}/${cover.attributes.fileName}`,
-                    }}
-                  />
+                  <View>
+                    <Image
+                      style={styles.mangaCover}
+                      source={{
+                        uri: `https://uploads.mangadex.org/covers/${item.id}/${cover.attributes.fileName}`,
+                      }}
+                    />
+                  </View>
                 </Link>
               ))}
             <Text style={styles.itemTitle}>{item.attributes.title.en}</Text>

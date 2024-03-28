@@ -12,7 +12,7 @@ const AppButton = ({ onPress, title }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#FF715B',
+    backgroundColor: '#9381ff',
     padding: 12,
     borderRadius: 12,
     alignItems: 'center',

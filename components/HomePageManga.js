@@ -1,6 +1,5 @@
-import { ScrollView, Text, View, Image, StyleSheet } from 'react-native';
+import { ScrollView, Text, View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
-
 import React, { useState, useEffect } from 'react';
 import { getManga } from '../api/mangaFeed.api';
 
@@ -31,10 +30,17 @@ const MangaView = ({ title, offset, endpoint }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>{title}</Text>
+        <TouchableOpacity style={styles.detailsButton}>
+          <Link href="/manga/">
+            <Text style={styles.detailsText}>Explore...</Text>
+          </Link>
+        </TouchableOpacity>
+      </View>
       <ScrollView
         horizontal={true}
-        contentContainerStyle={styles.ScrollView}
+        contentContainerStyle={styles.scrollView}
         showsHorizontalScrollIndicator={false}
       >
         {theManga.map((manga) => (
@@ -69,12 +75,28 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 10,
   },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: '#333',
-    paddingLeft: 10,
+  },
+  detailsButton: {
+    padding: 5,
+
+    color: ' #9381ff',
+    borderRadius: 5,
+  },
+  detailsText: {
+    color: '#9381ff',
+    fontWeight: 'bold',
   },
   scrollView: {
     flexDirection: 'row',
